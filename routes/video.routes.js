@@ -38,6 +38,18 @@ videoRoutes.post('/', async (req, res, next) =>{
     }
 });
 
+videoRoutes.put('/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;  
+        const videoPut = new Video(req.body);
+        videoPut._id = id;
+        await Video.findByIdAndUpdate(id, videoPut);
+        return res.status(200).json(videoPut);
+    } catch (error) {
+        return next(error)
+    }
+});
+
 videoRoutes.delete('/:id', async (req, res, next) => {
 try {
     const { id } = req.params;
@@ -48,9 +60,9 @@ try {
 } catch (error) {
     return next(error)
 }
+});
 
 
-})
 
 
 export { videoRoutes }
