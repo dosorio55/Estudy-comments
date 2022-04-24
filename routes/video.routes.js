@@ -1,12 +1,11 @@
 import express from "express";
-import res from "express/lib/response";
 
 import { Video } from "../models/Video.js";
 
 const videoRoutes = express.Router();
 
 videoRoutes.get('/', async(req, res) => {
-    videos = await Video.find()
+   let videos = await Video.find()
 /*     const { type } = req.query;
 
     let videos = [];
@@ -15,6 +14,7 @@ videoRoutes.get('/', async(req, res) => {
     } else {
         
     } */
+    res.send(videos)
 });
 
 export { videoRoutes}
