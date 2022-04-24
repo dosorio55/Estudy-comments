@@ -2,7 +2,8 @@ import express from "express";
 import { connection } from "./db.js";
 
 //Imported roures
-import { videoRoutes } from "./routes/video.routes.js";
+import { commentRoutes } from "./routes/comment.routes.js";
+import { linkRoutes } from "./routes/link.routes.js";
 
 const PORT = 3000;
 const server = express();
@@ -18,7 +19,8 @@ server.use(express.urlencoded({ extended: true }));
 
 //Routes
 server.use('/', router);
-server.use('/videos', videoRoutes);
+server.use('/comment', commentRoutes);
+server.use('/link', linkRoutes);
 
 //control de errores
 server.use('*', (req, res, next) => {
