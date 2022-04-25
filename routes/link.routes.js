@@ -6,10 +6,10 @@ const linkRoutes = express.Router();
 
 linkRoutes.get('/', async (req, res) => {
 
-    const link = await Link.find();
+    const links = await Link.find()
+    // .populate('comments');
 
-    res.send(link);
-
+    return res.status(200).json(links)
 
 });
 
@@ -22,14 +22,29 @@ linkRoutes.post('/', async (req, res, next) =>{
             puntuation: req.body.puntuation,
             category: req.body.category,
             star: req.body.star,
-        });
+            comments: []
+        }
+        );
         const createdLink = await newLink.save();
         return res.status(201).json(createdLink);
     } catch (error) {
         next(error);
     }
-})
+});
 
-
+linkRoutes.put('/add-comment', async (req, res, next) => {
+    try {
+        const { linkId } = req.body;
+        const { commentId } = req.body;
+        const updatedLink = await Link.findByIdAndUpdate(
+            linkId,
+            { $push: { comments: commentId } },
+            { new: true }
+        );
+        return res.status(200).json(updatedLink);
+    } catch (error) {
+        return next(error);
+    }
+});
 
 export { linkRoutes }

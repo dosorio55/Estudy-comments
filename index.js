@@ -20,7 +20,7 @@ server.use(express.urlencoded({ extended: true }));
 //Routes
 server.use('/', router);
 server.use('/comment', commentRoutes);
-server.use('/link', linkRoutes);
+server.use('/links', linkRoutes);
 
 //control de errores
 server.use('*', (req, res, next) => {
