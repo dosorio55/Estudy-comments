@@ -9,4 +9,4 @@ const connection = mongoose.connect(DB_URL, {
 
 
 
-  export { connection }
+  export {DB_URL, connection }

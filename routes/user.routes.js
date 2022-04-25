@@ -11,17 +11,7 @@ userRoutes.post('/register', (req, res, next) => {
         if (error) {
             return next(error);
         }
-
         return res.status(201).json(user)
-        /*        req.logIn(user, (error) => {
-                   // Si hay un error logeando al usuario, resolvemos el controlador
-                   if (error) {
-                       return next(error);
-                   }
-                   // Si no hay error, devolvemos al usuario logueado
-                   return res.status(201).json(user)
-               });
-        */
     };
 
     passport.authenticate('register', done)(req);
@@ -41,5 +31,20 @@ userRoutes.post('/login', (req, res, next) => {
         });
     })(req);
 });
+
+//Logout
+userRoutes.post('/logout', (req, res, next) => {
+    if (req.user) {
+      req.logout();
+  
+      req.session.destroy(() => {
+        res.clearCookie('connect.sid');
+        return res.status(200).json('Hasta pronto!!');
+      });
+    } else {
+      return res.sendStatus(304);
+    }
+  });
+
 
 export { userRoutes }

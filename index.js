@@ -1,7 +1,9 @@
 import express from "express";
-import { connection } from "./db.js";
+import { DB_URL } from "./db.js";
 
 import session from "express-session";
+import MongoStore from "connect-mongo";
+
 import passport from 'passport'
 import './authentication/passport.js';
 
@@ -30,6 +32,9 @@ server.use(
       cookie: {
         maxAge: 3600000
       },
+      store: MongoStore.create({
+        mongoUrl: DB_URL,
+      })
     })
   );
 
