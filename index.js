@@ -20,7 +20,7 @@ import { userRoutes } from "./routes/user.routes.js";
 import { commentRoutes } from "./routes/comment.routes.js";
 import { linkRoutes } from "./routes/link.routes.js";
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const server = express();
 const router = express.Router();
 
