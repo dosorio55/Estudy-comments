@@ -96,3 +96,16 @@ passport.deserializeUser(async (userId, done) => {
     return done(err);
   }
 });
+
+//Autentication
+
+const isAuth = (req, res, next) => {
+  //Esta es la funcion que lleva por dentro passport, is isAuthenticated
+  if (req.isAuthenticated()) {
+    return next();
+  } else {
+    return res.status(401).json('No esta logueado');  }
+};
+
+
+export { isAuth}

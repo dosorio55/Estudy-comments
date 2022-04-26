@@ -1,11 +1,13 @@
 import express from "express";
+import 'dotenv/config';
 import { DB_URL } from "./db.js";
 
 import session from "express-session";
 import MongoStore from "connect-mongo";
 
 import passport from 'passport'
-import './authentication/passport.js';
+import { isAuth } from "./authentication/passport.js";
+// import './authentication/passport.js';
 
 //Imported roures
 import { userRoutes } from "./routes/user.routes.js";
@@ -42,11 +44,15 @@ server.use(
 server.use(passport.initialize());
 server.use(passport.session());
 
+//upload files
+
+// server.use(express.static(path.join(__dirname, 'public')));
+
 //Routes
 server.use('/', router);
 server.use('/user', userRoutes);
 server.use('/comment', commentRoutes);
-server.use('/links', linkRoutes);
+server.use('/links', [isAuth], linkRoutes);
 
 //control de errores
 server.use('*', (req, res, next) => {

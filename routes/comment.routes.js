@@ -6,22 +6,12 @@ const commentRoutes = express.Router();
 
 commentRoutes.get('/', async (req, res) => {
 
+    console.log(req.user._id)
+
     const comment = await Comment.find();
 
     res.send(comment);
 
-/*     const { minDate, maxDate } = req.query;
-    const dateFilters = {
-        ...(minDate && {$gt: minDate}),
-        ...(maxDate && {$lt: maxDate})
-    }
-
-    try {
-        const filters = Object.keys(dateFilters).length > 0 ? { creationDate: dateFilters} : undefined;
-        const videos = await Video.find(filters)
-    } catch (error) {
-        return res.status(500).json(error)
-    } */
 });
 
 commentRoutes.post('/', async (req, res, next) =>{

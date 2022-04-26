@@ -7,8 +7,7 @@ const linkRoutes = express.Router();
 linkRoutes.get('/', async (req, res) => {
 
     console.log(req.user)
-    const links = await Link.find()
-    // .populate('comments');
+    const links = await Link.find().populate('comments');
 
     return res.status(200).json(links)
 
