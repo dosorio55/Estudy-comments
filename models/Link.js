@@ -8,6 +8,7 @@ const linkSchema = new Schema(
     puntuation: Number,
     category: {type: String, required: true},
     star: Boolean,
+    picture: String,
     comments: [{ type: mongoose.Types.ObjectId, ref: 'Comment' }]
   },
   {

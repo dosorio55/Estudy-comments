@@ -1,13 +1,19 @@
 import express from "express";
 import 'dotenv/config';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 import { DB_URL } from "./db.js";
 
 import session from "express-session";
 import MongoStore from "connect-mongo";
 
+
+
 import passport from 'passport'
 import { isAuth } from "./authentication/passport.js";
-// import './authentication/passport.js';
 
 //Imported roures
 import { userRoutes } from "./routes/user.routes.js";
@@ -25,6 +31,10 @@ router.get('/', (req, res) =>{
 //Midlewares
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
+
+//Middlewares - Public
+
+server.use(express.static(path.join(__dirname, 'public')));
 
 server.use(
     session({

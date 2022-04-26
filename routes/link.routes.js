@@ -1,4 +1,5 @@
 import express from "express";
+import { upload } from "../middlewares/file.middleware.js";
 
 import { Link } from "../models/Link.js";
 
@@ -14,14 +15,17 @@ linkRoutes.get('/', async (req, res) => {
 });
 
 
-linkRoutes.post('/', async (req, res, next) =>{
+linkRoutes.post('/', [upload.single('picture')], async (req, res, next) =>{
     try {
+
+        const characterPicture = req.file ? req.file.filename : null;
         const newLink = new Link ({
 
             name: req.body.name,
             puntuation: req.body.puntuation,
             category: req.body.category,
             star: req.body.star,
+            picture: characterPicture,
             comments: []
         }
         );
