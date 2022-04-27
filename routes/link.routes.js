@@ -17,14 +17,12 @@ linkRoutes.get('/', async (req, res, next) => {
         } else {
 
             const links = await Link.find().populate('comments');
-
             return res.status(200).json(links)
         }
 
     } catch (error) {
         next(error);
     }
-
 });
 
 linkRoutes.post('/', [upload.single('picture'), uploadToCloudinary], async (req, res, next) => {
