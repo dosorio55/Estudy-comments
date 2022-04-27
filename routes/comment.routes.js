@@ -7,17 +7,19 @@ const commentRoutes = express.Router();
 
 commentRoutes.get('/', async (req, res) => {
 
-
-    const comment = await Comment.find();
-
-    res.send(comment);
-
+    const {} = req.params
+    try {
+        const comment = await Comment.find({});
+        return res.status(200).json(comment);
+    } catch (error) {
+        next(error)
+    }
 });
 
-commentRoutes.post('/', async (req, res, next) =>{
-   
+commentRoutes.post('/', async (req, res, next) => {
+
     try {
-        const newComment = new Comment ({
+        const newComment = new Comment({
             title: req.body.title,
             comment: req.body.comment,
             timeStamp: req.body.timeStamp,
@@ -44,7 +46,7 @@ commentRoutes.post('/', async (req, res, next) =>{
 
 commentRoutes.put('/:id', async (req, res, next) => {
     try {
-        const { id } = req.params;  
+        const { id } = req.params;
         const commentPut = new Comment(req.body);
         commentPut._id = id;
         await Comment.findByIdAndUpdate(id, commentPut);
@@ -56,15 +58,15 @@ commentRoutes.put('/:id', async (req, res, next) => {
 
 
 commentRoutes.delete('/:id', async (req, res, next) => {
-try {
-    const { id } = req.params;
-    
-    const deleteComment = await Comment.findByIdAndDelete(id);
-    return res.status(200).json(deleteComment)
-    
-} catch (error) {
-    return next(error)
-}
+    try {
+        const { id } = req.params;
+
+        const deleteComment = await Comment.findByIdAndDelete(id);
+        return res.status(200).json(deleteComment)
+
+    } catch (error) {
+        return next(error)
+    }
 });
 
 export { commentRoutes }

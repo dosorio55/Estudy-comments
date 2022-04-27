@@ -1,8 +1,9 @@
 import express from "express";
-import fs from "fs"
+import fs, { link } from "fs"
 import { upload, uploadToCloudinary } from "../middlewares/file.middleware.js";
 
 import { Link } from "../models/Link.js";
+import { Comment } from "../models/Comment.js";
 
 const linkRoutes = express.Router();
 
@@ -68,6 +69,15 @@ linkRoutes.post('/', [upload.single('picture'), uploadToCloudinary], async (req,
 linkRoutes.delete('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
+
+        const linkFound = await Link.findById(id);
+        const { comments } = linkFound;
+
+      comments.map(async (commentId) =>{
+            await Comment.findByIdAndDelete(commentId);
+        });
+        
+        // return res.status(200).json(comments[0])
         
         const deleteLink = await Link.findByIdAndDelete(id);
         return res.status(200).json(deleteLink)
