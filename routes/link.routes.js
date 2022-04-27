@@ -1,6 +1,6 @@
 import express from "express";
 import fs from "fs"
-import { upload } from "../middlewares/file.middleware.js";
+import { upload, uploadToCloudinary } from "../middlewares/file.middleware.js";
 
 import { Link } from "../models/Link.js";
 
@@ -16,10 +16,10 @@ linkRoutes.get('/', async (req, res) => {
 });
 
 
-linkRoutes.post('/', [upload.single('picture')], async (req, res, next) =>{
+linkRoutes.post('/', [upload.single('picture'), uploadToCloudinary], async (req, res, next) =>{
     try {
 
-        const characterPicture = req.file ? req.file.filename : null;
+        const characterPicture = req.file_url || null;
         const newLink = new Link ({
 
             name: req.body.name,
@@ -53,3 +53,6 @@ linkRoutes.put('/add-comment', async (req, res, next) => {
 });
 
 export { linkRoutes }
+
+
+//55:40

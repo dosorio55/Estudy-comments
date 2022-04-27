@@ -2,6 +2,10 @@ import multer from 'multer';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import fs from 'fs';
+import cloudinary from 'cloudinary';
+
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const VALID_FILE_TYPES = ['image/png', 'image/jpg', 'image/jpeg'];
 
@@ -27,4 +31,25 @@ const upload = multer({
     fileFilter,
 });
 
-export { upload }
+//Upload To Cloudinary
+const uploadToCloudinary = async (req, res, next) => {
+    if (req.file) {
+        try {
+            const filePath = req.file.path;
+            const image = await cloudinary.v2.uploader.upload(filePath);
+
+            // Borramos el archivo local
+            await fs.unlinkSync(filePath);
+
+            // Añadimos la propiedad file_url a nuestro Request
+            req.file_url = image.secure_url;
+            return next();
+        } catch (error) {
+            return next(error)
+        }
+    } else {
+        return next();
+    }
+};
+
+export { upload, uploadToCloudinary }
