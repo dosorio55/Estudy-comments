@@ -59,7 +59,7 @@ server.use(passport.session());
 //Routes
 server.use('/', router);
 server.use('/user', userRoutes);
-server.use('/comment', commentRoutes);
+server.use('/comment', [isAuth], commentRoutes);
 server.use('/links', [isAuth], linkRoutes);
 
 //control de errores

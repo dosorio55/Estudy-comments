@@ -9,6 +9,7 @@ const linkSchema = new Schema(
     category: {type: String, required: true},
     star: Boolean,
     picture: String,
+    linked_email: String,
     comments: [{ type: mongoose.Types.ObjectId, ref: 'Comment' }]
   },
   {

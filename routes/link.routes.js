@@ -8,24 +8,29 @@ const linkRoutes = express.Router();
 
 linkRoutes.get('/', async (req, res) => {
 
-    console.log(req.user)
-    const links = await Link.find().populate('comments');
+    try {
 
-    return res.status(200).json(links)
+        const links = await Link.find().populate('comments');
+
+        return res.status(200).json(links)
+    } catch (error) {
+        next(error);
+    }
 
 });
 
 
-linkRoutes.post('/', [upload.single('picture'), uploadToCloudinary], async (req, res, next) =>{
+linkRoutes.post('/', [upload.single('picture'), uploadToCloudinary], async (req, res, next) => {
     try {
 
-        const characterPicture = req.file_url || null;
-        const newLink = new Link ({
+        const characterPicture = req.file_url || null;
+        const newLink = new Link({
 
             name: req.body.name,
             puntuation: req.body.puntuation,
             category: req.body.category,
             star: req.body.star,
+            linked_email: req.user.email,
             picture: characterPicture,
             comments: []
         }
