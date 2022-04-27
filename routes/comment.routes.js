@@ -1,12 +1,12 @@
 import express from "express";
 
 import { Comment } from "../models/Comment.js";
+import { Link } from "../models/Link.js";
 
 const commentRoutes = express.Router();
 
 commentRoutes.get('/', async (req, res) => {
 
-    console.log(req.user._id)
 
     const comment = await Comment.find();
 
@@ -15,20 +15,32 @@ commentRoutes.get('/', async (req, res) => {
 });
 
 commentRoutes.post('/', async (req, res, next) =>{
+   
     try {
         const newComment = new Comment ({
             title: req.body.title,
             comment: req.body.comment,
             timeStamp: req.body.timeStamp,
-            star: req.body.star
+            star: req.body.star,
+            linkId: req.body.linkId
         })
 
         const createdComment = await newComment.save();
-        return res.status(201).json(createdComment)
+
+        const commentId = createdComment._id
+        const linkId = createdComment.linkId
+        const updatedLink = await Link.findByIdAndUpdate(
+            linkId,
+            { $push: { comments: commentId } },
+            { new: true }
+        );
+        return res.status(200).json(updatedLink);
+
     } catch (error) {
         next(error)
     }
 });
+
 
 commentRoutes.put('/:id', async (req, res, next) => {
     try {
@@ -41,6 +53,7 @@ commentRoutes.put('/:id', async (req, res, next) => {
         return next(error)
     }
 });
+
 
 commentRoutes.delete('/:id', async (req, res, next) => {
 try {

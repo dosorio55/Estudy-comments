@@ -7,7 +7,9 @@ const commentSchema = new Schema (
         title: {type: String, required: true},
         comment: {type: String, required: true},
         timeStamp: {type: String, required: true},
-        star: Boolean
+        star: Boolean,
+        linkId: {type: String, required:true}
+
     },
     {
         timestamps: true

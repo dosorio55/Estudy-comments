@@ -9,14 +9,16 @@ const linkRoutes = express.Router();
 linkRoutes.get('/', async (req, res, next) => {
 
     const categoryReq = req.query.linkCategory
+    const userEmail = req.user.email;
+
     try {
         if (categoryReq) {
 
-            const links = await Link.find({ category: categoryReq }).populate('comments');
+            const links = await Link.find({ linked_email: userEmail, category: categoryReq }).populate('comments');
             return res.status(200).json(links)
         } else {
 
-            const links = await Link.find().populate('comments');
+            const links = await Link.find({linked_email: userEmail}).populate('comments');
             return res.status(200).json(links)
         }
 
@@ -25,13 +27,28 @@ linkRoutes.get('/', async (req, res, next) => {
     }
 });
 
+linkRoutes.put('/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;  
+        const linkPut = new Link(req.body);
+        linkPut._id = id;
+        await Link.findByIdAndUpdate(id, linkPut);
+        return res.status(200).json(linkPut);
+    } catch (error) {
+        return next(error)
+    }
+});
+
 linkRoutes.post('/', [upload.single('picture'), uploadToCloudinary], async (req, res, next) => {
     try {
 
         const characterPicture = req.file_url || null;
+        const userEmail = req.user.email;
+
         const newLink = new Link({
 
             name: req.body.name,
+            userLink: userEmail,
             link_url: req.body.link_url,
             puntuation: req.body.puntuation,
             category: req.body.category,
@@ -48,25 +65,10 @@ linkRoutes.post('/', [upload.single('picture'), uploadToCloudinary], async (req,
     }
 });
 
-linkRoutes.put('/add-comment', async (req, res, next) => {
-    try {
-        const { linkId } = req.body;
-        const { commentId } = req.body;
-        const updatedLink = await Link.findByIdAndUpdate(
-            linkId,
-            { $push: { comments: commentId } },
-            { new: true }
-        );
-        return res.status(200).json(updatedLink);
-    } catch (error) {
-        return next(error);
-    }
-});
-
 linkRoutes.delete('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
-
+        
         const deleteLink = await Link.findByIdAndDelete(id);
         return res.status(200).json(deleteLink)
 
@@ -74,6 +76,7 @@ linkRoutes.delete('/:id', async (req, res, next) => {
         return next(error)
     }
 });
+
 
 export { linkRoutes }
 
