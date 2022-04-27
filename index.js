@@ -26,7 +26,7 @@ const router = express.Router();
 
 router.get('/', (req, res) =>{
     res.send('Hola de nuevo desde mongo')
-})
+});
 
 //Midlewares
 server.use(express.json());
@@ -34,11 +34,13 @@ server.use(express.urlencoded({ extended: true }));
 
 //Middlewares - Public
 
+//subida de ficheros
+
 server.use(express.static(path.join(__dirname, 'public')));
 
 server.use(
     session({
-      secret: 'upgradehub_node',
+      secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
       cookie: {
@@ -53,10 +55,6 @@ server.use(
 //init passport  
 server.use(passport.initialize());
 server.use(passport.session());
-
-//upload files
-
-// server.use(express.static(path.join(__dirname, 'public')));
 
 //Routes
 server.use('/', router);
