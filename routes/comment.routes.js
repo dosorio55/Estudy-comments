@@ -7,10 +7,17 @@ const commentRoutes = express.Router();
 
 commentRoutes.get('/', async (req, res) => {
 
-    const {} = req.params
+    const { linkId } = req.params
+    const userEmail = req.user.email;
+
     try {
-        const comment = await Comment.find({});
-        return res.status(200).json(comment);
+        if (linkId) {
+            const comment = await Comment.find({ linkId: linkId, linked_email: userEmail });
+            return res.status(200).json(comment);
+        } else {
+            const comment = await Comment.find({ linked_email: userEmail });
+            return res.status(200).json(comment);
+        }
     } catch (error) {
         next(error)
     }
@@ -18,25 +25,35 @@ commentRoutes.get('/', async (req, res) => {
 
 commentRoutes.post('/', async (req, res, next) => {
 
+    const userEmail = req.user.email;
+
     try {
         const newComment = new Comment({
             title: req.body.title,
+            linked_email: userEmail,
             comment: req.body.comment,
             timeStamp: req.body.timeStamp,
             star: req.body.star,
             linkId: req.body.linkId
         })
+        const linkId = req.body.linkId
+        const findLink = await Link.findById(linkId)
+        if (findLink) {
 
-        const createdComment = await newComment.save();
+            const createdComment = await newComment.save();
 
-        const commentId = createdComment._id
-        const linkId = createdComment.linkId
-        const updatedLink = await Link.findByIdAndUpdate(
-            linkId,
-            { $push: { comments: commentId } },
-            { new: true }
-        );
-        return res.status(200).json(updatedLink);
+            const commentId = createdComment._id
+
+            const updatedLink = await Link.findByIdAndUpdate(
+                linkId,
+                { $push: { comments: commentId } },
+                { new: true }
+            );
+            return res.status(200).json(updatedLink);
+        } else {
+            res.send("You are trying to add a comment on a link that doesn't exist ");
+
+        }
 
     } catch (error) {
         next(error)

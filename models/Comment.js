@@ -8,6 +8,7 @@ const commentSchema = new Schema (
         comment: {type: String, required: true},
         timeStamp: {type: String, required: true},
         star: Boolean,
+        linked_email: String,
         linkId: {type: String, required:true}
 
     },

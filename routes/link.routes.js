@@ -77,8 +77,6 @@ linkRoutes.delete('/:id', async (req, res, next) => {
             await Comment.findByIdAndDelete(commentId);
         });
         
-        // return res.status(200).json(comments[0])
-        
         const deleteLink = await Link.findByIdAndDelete(id);
         return res.status(200).json(deleteLink)
 
