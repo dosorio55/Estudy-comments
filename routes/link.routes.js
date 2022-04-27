@@ -6,19 +6,26 @@ import { Link } from "../models/Link.js";
 
 const linkRoutes = express.Router();
 
-linkRoutes.get('/', async (req, res) => {
+linkRoutes.get('/', async (req, res, next) => {
 
+    const categoryReq = req.query.linkCategory
     try {
+        if (categoryReq) {
 
-        const links = await Link.find().populate('comments');
+            const links = await Link.find({ category: categoryReq }).populate('comments');
+            return res.status(200).json(links)
+        } else {
 
-        return res.status(200).json(links)
+            const links = await Link.find().populate('comments');
+
+            return res.status(200).json(links)
+        }
+
     } catch (error) {
         next(error);
     }
 
 });
-
 
 linkRoutes.post('/', [upload.single('picture'), uploadToCloudinary], async (req, res, next) => {
     try {
@@ -27,6 +34,7 @@ linkRoutes.post('/', [upload.single('picture'), uploadToCloudinary], async (req,
         const newLink = new Link({
 
             name: req.body.name,
+            link_url: req.body.link_url,
             puntuation: req.body.puntuation,
             category: req.body.category,
             star: req.body.star,
@@ -54,6 +62,18 @@ linkRoutes.put('/add-comment', async (req, res, next) => {
         return res.status(200).json(updatedLink);
     } catch (error) {
         return next(error);
+    }
+});
+
+linkRoutes.delete('/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        const deleteLink = await Link.findByIdAndDelete(id);
+        return res.status(200).json(deleteLink)
+
+    } catch (error) {
+        return next(error)
     }
 });
 

@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const linkSchema = new Schema(
   {
     name: { type: String, required: true },
+    link_url: { type: String, required: true },
     puntuation: Number,
     category: {type: String, required: true},
     star: Boolean,
