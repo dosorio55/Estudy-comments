@@ -15,11 +15,11 @@ linkRoutes.get('/', async (req, res, next) => {
     try {
         if (categoryReq) {
 
-            const links = await Link.find({ linked_email: userEmail, category: categoryReq }).populate('comments');
+            const links = await Link.find({ linked_email: userEmail, category: categoryReq });
             return res.status(200).json(links)
         } else {
 
-            const links = await Link.find({linked_email: userEmail}).populate('comments');
+            const links = await Link.find({linked_email: userEmail});
             return res.status(200).json(links)
         }
 
@@ -28,6 +28,21 @@ linkRoutes.get('/', async (req, res, next) => {
     }
 });
 
+//get link by id
+linkRoutes.get('/:id', async (req, res, next) => {
+
+    const linkId = req.params.id
+
+    try {
+            const links = await Link.findById(linkId).populate('comments');
+            return res.status(200).json(links)
+
+    } catch (error) {
+        next(error);
+    }
+});
+
+//Update Link
 linkRoutes.put('/:id', async (req, res, next) => {
     try {
         const { id } = req.params;  
@@ -87,6 +102,3 @@ linkRoutes.delete('/:id', async (req, res, next) => {
 
 
 export { linkRoutes }
-
-
-//55:40
